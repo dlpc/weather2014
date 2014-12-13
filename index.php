@@ -5,12 +5,12 @@
  * @author NetPuter <netputer@gmail.com>
  */
 
-  require('wechat.php');
+require('wechat.php');
 
-  /**
-   * 微信公众平台演示类
-   */
-  class MyWechat extends Wechat {
+/**
+* 微信公众平台演示类
+*/
+class MyWechat extends Wechat {
 
     /**
      * 用户关注时触发，回复「欢迎关注」
@@ -106,7 +106,11 @@
      * @return void
      */
     protected function onVoice() {
-      $this->responseText('收到了语音消息,识别结果为：' . $this->getRequest('Recognition'));
+        
+        $voice_text = $this->getRequest('Recognition');
+        $weather = $this -> weather($voice_text);
+
+        $this->responseText($weather);
     }
 
     /**
@@ -128,7 +132,7 @@
     }
       
       
-    
+
     /**
      * 收到文本消息时触发，回复收到的文本消息内容
      *
@@ -144,7 +148,7 @@
         $this->responseText($weather);
     }
       
-    
+
     /**
      * 根据城市名返回天气
      *
@@ -152,7 +156,7 @@
      */
     protected function weather( $city ) {
         
-      	$json_weather = file_get_contents("http://api.map.baidu.com/telematics/v3/weather?location=".$city."&output=json&ak=qPFnHQ18Y3mbqGmrTolRqhKd");
+        $json_weather = file_get_contents("http://api.map.baidu.com/telematics/v3/weather?location=".$city."&output=json&ak=qPFnHQ18Y3mbqGmrTolRqhKd");
         //echo "http://api.map.baidu.com/telematics/v3/weather?location=".$city."&output=json&ak=qPFnHQ18Y3mbqGmrTolRqhKd";
         
         //return $json_weather;
@@ -172,28 +176,25 @@
         $string .= "\n【今天】".$yb[0]['date']."，".$yb[0]['weather']."，".$yb[0]['wind']."，".$yb[0]['temperature'];
         //$string = "";
         /*foreach ( $today_des as $item ) {
-			
-       		$string.= "\n".$item['title']."\n".$item['zs']."\n";
+            
+            $string.= "\n".$item['title']."\n".$item['zs']."\n";
 
         }
         
         foreach ( $yb as $item ) {
 
 
-			$string.= $item['date'].$item['weather'].$item['wind'].$item['temperature']."\n";
+            $string.= $item['date'].$item['weather'].$item['wind'].$item['temperature']."\n";
 
 
-		}*/
+        }*/
         $string .="\n【明天】".$yb[1]['date']."，".$yb[1]['weather']."，".$yb[1]['wind']."，".$yb[1]['temperature'];
         
 
         return $string;
         
     } 
-      
-      
+}
 
-  }
-
-  $wechat = new MyWechat('NBTh9LxIPfT2jVZUbvGItTOV', TRUE);
-  $wechat->run();
+$wechat = new MyWechat('NBTh9LxIPfT2jVZUbvGItTOV', TRUE);
+$wechat->run();
